@@ -1,0 +1,74 @@
+﻿@page "/tictactoe"
+@using Games.TicTacToeClasses
+
+<h3>Tic-Tac-Toe</h3>
+
+<p>Winner: @Winner</p>
+
+@if (isCrossTurn)
+{
+    <p>Cross Turn</p>
+}
+else
+{
+    <p>Circle Turn</p>
+}
+
+<div class="grid">
+    @for (var i = 0; i < gridWidth; i++)
+    {
+        <div class="row">
+            @for (var j = 0; j < gridHeight; j++)
+            {
+                <div class="square border" @onclick="() => ChangeSquareStatus(i, j)">
+                    @grid.GetSquare(i, j).GetStatusHtml()
+                    <br />
+                    @i, @j
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .square {
+        width: 200px;
+        height: 200px;
+    }
+</style>
+
+@code {
+    int gridHeight = 3;
+    int gridWidth = 3;
+
+    Grid grid = new Grid();
+
+    bool isCrossTurn = true;
+
+    TicTocToeTeam Winner = TicTocToeTeam.None;
+
+    public void ChangeSquareStatus(int squareXPos, int squareYPos)
+    {
+        //if (grid.isWonByCircle || grid.isWonByCross) return;
+
+        //var clickedSquare = grid.Squares.Where(x => x.xPos == squareXPos && x.yPos == squareYPos).FirstOrDefault();
+
+        //if (clickedSquare.Status != SquareStatus.Empty) return;
+
+        //clickedSquare.Status = (SquareStatus)Convert.ToInt32(isCrossTurn);
+
+        //if (grid.isWonByCircle)
+        //{
+        //    Winner = TicTocToeTeam.Circle;
+        //    return;
+        //}
+        //else if (grid.isWonByCross)
+        //{
+        //    Winner = TicTocToeTeam.Cross;
+        //    return;
+        //}
+
+        isCrossTurn = !isCrossTurn;
+    }
+
+}
