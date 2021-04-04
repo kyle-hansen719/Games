@@ -3,27 +3,29 @@
 
 <h3>Tic-Tac-Toe</h3>
 
-<p>Winner: @Winner</p>
+<p style="@(game.Winner != TicTocToeTeam.None ? "font-size: 50px;" : "")">Winner: @game.Winner</p>
 
-@if (isCrossTurn)
+@if (game.isCrossTurn)
 {
-    <p>Cross Turn</p>
+    <p class="blue">Cross Turn</p>
 }
 else
 {
-    <p>Circle Turn</p>
+    <p class="red">Circle Turn</p>
 }
 
+<button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
+
 <div class="grid">
-    @for (var i = 0; i < gridWidth; i++)
+    @for (var i = 0; i < 3; i++)
     {
         <div class="row">
-            @for (var j = 0; j < gridHeight; j++)
+            @for (var j = 0; j < 3; j++)
             {
-                <div class="square border" @onclick="() => ChangeSquareStatus(i, j)">
-                    @grid.GetSquare(i, j).GetStatusHtml()
-                    <br />
-                    @i, @j
+                var x = i;
+                var y = j;
+                <div class="square border p-4" @onclick="() => ChangeStatus(x, y)">
+                    <i class="@game.grid.GetSquare(x, y).GetStatusHtml() square-icon"></i>
                 </div>
             }
         </div>
@@ -32,43 +34,33 @@ else
 
 <style>
     .square {
-        width: 200px;
-        height: 200px;
+        min-width: 160px;
+        min-height: 160px;
+    }
+
+    .square-icon {
+        font-size: 100px;
+    }
+
+    .red {
+        color: red;
+    }
+
+    .blue {
+        color: dodgerblue;
     }
 </style>
 
 @code {
-    int gridHeight = 3;
-    int gridWidth = 3;
+    TicTacToeGame game = new TicTacToeGame();
 
-    Grid grid = new Grid();
-
-    bool isCrossTurn = true;
-
-    TicTocToeTeam Winner = TicTocToeTeam.None;
-
-    public void ChangeSquareStatus(int squareXPos, int squareYPos)
+    public void ResetGame()
     {
-        //if (grid.isWonByCircle || grid.isWonByCross) return;
-
-        //var clickedSquare = grid.Squares.Where(x => x.xPos == squareXPos && x.yPos == squareYPos).FirstOrDefault();
-
-        //if (clickedSquare.Status != SquareStatus.Empty) return;
-
-        //clickedSquare.Status = (SquareStatus)Convert.ToInt32(isCrossTurn);
-
-        //if (grid.isWonByCircle)
-        //{
-        //    Winner = TicTocToeTeam.Circle;
-        //    return;
-        //}
-        //else if (grid.isWonByCross)
-        //{
-        //    Winner = TicTocToeTeam.Cross;
-        //    return;
-        //}
-
-        isCrossTurn = !isCrossTurn;
+        game = new TicTacToeGame();
     }
 
+    public void ChangeStatus(int xPos, int yPos)
+    {
+        game.ChangeSquareStatus(xPos, yPos);
+    }
 }

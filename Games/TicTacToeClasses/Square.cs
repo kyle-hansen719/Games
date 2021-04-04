@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 namespace Games.TicTacToeClasses
 {
     public class Square
@@ -25,11 +21,11 @@ namespace Games.TicTacToeClasses
             switch (Status)
             {
                 case SquareStatus.Circle:
-                    return "O";
+                    return "oi oi-target red";
                 case SquareStatus.Cross:
-                    return "X";
+                    return "oi oi-x blue";
                 default:
-                    return "";
+                    return "no-icon";
             }
         }
     }
