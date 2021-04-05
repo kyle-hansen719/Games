@@ -3,7 +3,7 @@
 
 <h3>Tic-Tac-Toe</h3>
 
-<p style="@(game.Winner != TicTocToeTeam.None ? "font-size: 50px;" : "")">Winner: @game.Winner</p>
+<p style="@(game.Winner != TicTacToeTeam.None ? "font-size: 50px;" : "")">Winner: @game.Winner</p>
 
 @if (game.isCrossTurn)
 {
@@ -54,6 +54,8 @@ else
 @code {
     TicTacToeGame game = new TicTacToeGame();
 
+    AiOpponent opponent = new AiOpponent(TicTacToeTeam.Circle);
+
     public void ResetGame()
     {
         game = new TicTacToeGame();
@@ -61,6 +63,11 @@ else
 
     public void ChangeStatus(int xPos, int yPos)
     {
-        game.ChangeSquareStatus(xPos, yPos);
+        if (game.ChangeSquareStatus(xPos, yPos) == -1) return;
+
+        // AI move.
+        var bestSquare = opponent.GetBestMove(game.grid);
+        if (bestSquare is null) return;
+        game.ChangeSquareStatus(bestSquare.xPos, bestSquare.yPos);
     }
 }

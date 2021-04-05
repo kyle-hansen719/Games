@@ -21,27 +21,29 @@ namespace Games.TicTacToeClasses
             }
         }
 
-        public bool isWonByCircle => GetWinner() == TicTocToeTeam.Circle;
+        public bool isWonByCircle => GetWinner() == TicTacToeTeam.Circle;
 
-        public bool isWonByCross => GetWinner() == TicTocToeTeam.Cross;
+        public bool isWonByCross => GetWinner() == TicTacToeTeam.Cross;
 
         public bool isWon => isWonByCircle || isWonByCross;
 
         public bool isEmpty => Squares.Where(x => x.Status == SquareStatus.Empty).Count() == Squares.Count();
 
+        public List<Square> PossibleMoves => Squares.Where(x => x.Status == SquareStatus.Empty).ToList();
+
         // Fix This
-        private TicTocToeTeam GetWinner()
+        public TicTacToeTeam GetWinner()
         {
             // Checking columns for wins.
             for (var i = 0; i < 3; i++)
             {
                 if (Squares.Where(x => x.xPos == i && x.Status == SquareStatus.Circle).Count() == Squares.Where(x => x.xPos == i).Count())
                 {
-                    return TicTocToeTeam.Circle;
+                    return TicTacToeTeam.Circle;
                 }
                 else if (Squares.Where(x => x.xPos == i && x.Status == SquareStatus.Cross).Count() == Squares.Where(x => x.xPos == i).Count())
                 {
-                    return TicTocToeTeam.Cross;
+                    return TicTacToeTeam.Cross;
                 }
             }
 
@@ -50,34 +52,34 @@ namespace Games.TicTacToeClasses
             {
                 if (Squares.Where(x => x.yPos == i && x.Status == SquareStatus.Circle).Count() == Squares.Where(x => x.xPos == i).Count())
                 {
-                    return TicTocToeTeam.Circle;
+                    return TicTacToeTeam.Circle;
                 }
                 else if (Squares.Where(x => x.yPos == i && x.Status == SquareStatus.Cross).Count() == Squares.Where(x => x.xPos == i).Count())
                 {
-                    return TicTocToeTeam.Cross;
+                    return TicTacToeTeam.Cross;
                 }
             }
 
             // Checking diagonals for wins.
             if (GetSquare(0, 0).Status == SquareStatus.Circle && GetSquare(1, 1).Status == SquareStatus.Circle && GetSquare(2, 2).Status == SquareStatus.Circle)
             {
-                return TicTocToeTeam.Circle;
+                return TicTacToeTeam.Circle;
             }
             else if (GetSquare(0, 0).Status == SquareStatus.Cross && GetSquare(1, 1).Status == SquareStatus.Cross && GetSquare(2, 2).Status == SquareStatus.Cross)
             {
-                return TicTocToeTeam.Cross;
+                return TicTacToeTeam.Cross;
             }
 
             if (GetSquare(0, 2).Status == SquareStatus.Circle && GetSquare(1, 1).Status == SquareStatus.Circle && GetSquare(2, 0).Status == SquareStatus.Circle)
             {
-                return TicTocToeTeam.Circle;
+                return TicTacToeTeam.Circle;
             }
             else if (GetSquare(0, 2).Status == SquareStatus.Cross && GetSquare(1, 1).Status == SquareStatus.Cross && GetSquare(2, 0).Status == SquareStatus.Cross)
             {
-                return TicTocToeTeam.Cross;
+                return TicTacToeTeam.Cross;
             }
 
-            return TicTocToeTeam.None;
+            return TicTacToeTeam.None;
         }
 
         public Square GetSquare(int xPosition, int yPosition)

@@ -1,4 +1,4 @@
-﻿public enum TicTocToeTeam
+﻿public enum TicTacToeTeam
 {
     Circle,
     Cross,
