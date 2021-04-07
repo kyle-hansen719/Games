@@ -6,13 +6,37 @@ namespace Games.TicTacToeClasses
     {
         public Grid grid { get; set; } = new Grid();
 
-        public bool isCrossTurn { get; set; } = true;
+        public AiOpponent Opponent { get; set; }
 
         public TicTacToeTeam Winner { get; set; } = TicTacToeTeam.None;
+        
+        public bool IsCrossTurn { get; set; }
 
+        public TicTacToeGame(AiOpponent opponent, bool isCrossTurn)
+        {
+            Opponent = opponent;
+            IsCrossTurn = isCrossTurn;
+        }
+
+        public void ExecuteTurn(int xPos, int yPos, bool playVsComputer)
+        {
+            if (ChangeSquareStatus(xPos, yPos) == -1) return;
+
+            if (playVsComputer)
+            {
+                AiMove();
+            }
+        }
+
+        public void AiMove()
+        {
+            var bestSquare = Opponent.GetBestMove(grid);
+            if (bestSquare is null) return;
+            ChangeSquareStatus(bestSquare.xPos, bestSquare.yPos);
+        }
 
         //fix this so it returns something other than a status code
-        public int ChangeSquareStatus(int squareXPos, int squareYPos)
+        private int ChangeSquareStatus(int squareXPos, int squareYPos)
         {
             if (grid.isWonByCircle || grid.isWonByCross) return -1;
 
@@ -20,23 +44,26 @@ namespace Games.TicTacToeClasses
 
             if (clickedSquare.Status != SquareStatus.Empty) return -1;
 
-            clickedSquare.Status = (SquareStatus)Convert.ToInt32(isCrossTurn);
+            clickedSquare.Status = (SquareStatus)Convert.ToInt32(IsCrossTurn);
 
             Winner = grid.GetWinner();
-            //if (grid.isWonByCircle)
-            //{
-            //    Winner = TicTacToeTeam.Circle;
-            //    return 1;
-            //}
-            //else if (grid.isWonByCross)
-            //{
-            //    Winner = TicTacToeTeam.Cross;
-            //    return 1;
-            //}
 
-            isCrossTurn = !isCrossTurn;
+            IsCrossTurn = !IsCrossTurn;
 
             return 1;
+        }
+
+        public TicTacToeTeam GetOppositeTeam(TicTacToeTeam team)
+        {
+            switch (team)
+            {
+                case TicTacToeTeam.Circle:
+                    return TicTacToeTeam.Cross;
+                case TicTacToeTeam.Cross:
+                    return TicTacToeTeam.Circle;
+                default:
+                    return TicTacToeTeam.None;
+            }
         }
     }
 }

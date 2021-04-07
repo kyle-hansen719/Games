@@ -29,18 +29,12 @@ namespace Games.TicTacToeClasses
 
             if (PossibleMoves.Count == 0) return null;
 
-            // Randomizes moves then gives top move
-            //return PossibleMoves
-            //    .OrderBy(x => Guid.NewGuid())
-            //    .ThenBy(x => x.ResultingTeam)
-            //    .Select(x => x.Square)
-            //    .First();
-
+            // Randomizes moves then gives top move.
             var newPossibleMoves = PossibleMoves
                 .OrderBy(x => Guid.NewGuid())
                 .ToList();
 
-            PossibleMoves = newPossibleMoves.OrderBy(x => x.ResultingTeam).ToList(); 
+            PossibleMoves = newPossibleMoves.OrderBy(x => x.ResultingTeam).ToList();
 
             return PossibleMoves.Select(x => x.Square).First();
         }
@@ -73,5 +67,12 @@ namespace Games.TicTacToeClasses
                 ResultingTeam = resultingTeam
             };
         }
+
+        //private MinimaxResult EvaluateMoveMiniMax(Grid grid, Square move)
+        //{
+        //    return new MinimaxResult();
+        //}
+
+        
     }
 }

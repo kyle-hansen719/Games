@@ -5,7 +5,7 @@
 
 <p style="@(game.Winner != TicTacToeTeam.None ? "font-size: 50px;" : "")">Winner: @game.Winner</p>
 
-@if (game.isCrossTurn)
+@if (game.IsCrossTurn)
 {
     <p class="blue">Cross Turn</p>
 }
@@ -16,7 +16,7 @@ else
 
 <button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
 
-<div class="grid">
+<div class="grid mb-3">
     @for (var i = 0; i < 3; i++)
     {
         <div class="row">
@@ -30,6 +30,43 @@ else
             }
         </div>
     }
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        <div class="btn-group w-100 mb-3">
+            <button @onclick="ChangeOpponentStatus" class="btn w-50 @(playVsComputer ? "active btn-primary" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+                Play vs. Computer
+            </button>
+            <button @onclick="ChangeOpponentStatus" class="btn w-50 @(!playVsComputer ? "active btn-primary" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+                Play vs. Human
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3">
+        <div class="btn-group w-100 mb-3">
+            <button @onclick="ChangePlayIcon" class="btn w-50 @(playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+                Play as X
+            </button>
+            <button @onclick="ChangePlayIcon" class="btn w-50 @(!playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+                Play as O
+            </button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3">
+        <div class="btn-group w-100 mb-3">
+            <button @onclick="ChangeStartTeam" class="btn w-50 @(crossStart ? "active btn-danger" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+                Cross Start
+            </button>
+            <button @onclick="ChangeStartTeam" class="btn w-50 @(!crossStart ? "active btn-danger" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+                Circle Start
+            </button>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -52,22 +89,51 @@ else
 </style>
 
 @code {
-    TicTacToeGame game = new TicTacToeGame();
+    TicTacToeGame game = new TicTacToeGame(new AiOpponent(TicTacToeTeam.Circle), true);
 
-    AiOpponent opponent = new AiOpponent(TicTacToeTeam.Circle);
+    bool playAsX = true;
+
+    bool playVsComputer = true;
+
+    bool crossStart = true;
 
     public void ResetGame()
     {
-        game = new TicTacToeGame();
+        // Creates new game with an AI opponent whose team is the opposite of the players.
+        game = new TicTacToeGame(new AiOpponent(playAsX ? TicTacToeTeam.Circle : TicTacToeTeam.Cross), playAsX);
     }
 
     public void ChangeStatus(int xPos, int yPos)
     {
-        if (game.ChangeSquareStatus(xPos, yPos) == -1) return;
+        game.ExecuteTurn(xPos, yPos, playVsComputer);
+    }
 
-        // AI move.
-        var bestSquare = opponent.GetBestMove(game.grid);
-        if (bestSquare is null) return;
-        game.ChangeSquareStatus(bestSquare.xPos, bestSquare.yPos);
+    public void ChangeOpponentStatus()
+    {
+        playVsComputer = !playVsComputer;
+    }
+
+    public void ChangePlayIcon()
+    {
+        playAsX = !playAsX;
+        game.Opponent.AiTeam = game.GetOppositeTeam(game.Opponent.AiTeam);
+        game.IsCrossTurn = !game.IsCrossTurn;
+
+        if (playVsComputer && (playAsX != crossStart))
+        {
+            game.IsCrossTurn = !game.IsCrossTurn;
+            game.AiMove();
+        }
+    }
+
+    public void ChangeStartTeam()
+    {
+        crossStart = !crossStart;
+
+        if (playVsComputer && (playAsX != crossStart))
+        {
+            game.IsCrossTurn = !game.IsCrossTurn;
+            game.AiMove();
+        }
     }
 }
