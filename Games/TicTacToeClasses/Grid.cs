@@ -41,7 +41,7 @@ namespace Games.TicTacToeClasses
                 {
                     return TicTacToeTeam.Circle;
                 }
-                else if (Squares.Where(x => x.xPos == i && x.Status == SquareStatus.Cross).Count() == Squares.Where(x => x.xPos == i).Count())
+                if (Squares.Where(x => x.xPos == i && x.Status == SquareStatus.Cross).Count() == Squares.Where(x => x.xPos == i).Count())
                 {
                     return TicTacToeTeam.Cross;
                 }
@@ -54,7 +54,7 @@ namespace Games.TicTacToeClasses
                 {
                     return TicTacToeTeam.Circle;
                 }
-                else if (Squares.Where(x => x.yPos == i && x.Status == SquareStatus.Cross).Count() == Squares.Where(x => x.xPos == i).Count())
+                if (Squares.Where(x => x.yPos == i && x.Status == SquareStatus.Cross).Count() == Squares.Where(x => x.xPos == i).Count())
                 {
                     return TicTacToeTeam.Cross;
                 }
@@ -65,7 +65,7 @@ namespace Games.TicTacToeClasses
             {
                 return TicTacToeTeam.Circle;
             }
-            else if (GetSquare(0, 0).Status == SquareStatus.Cross && GetSquare(1, 1).Status == SquareStatus.Cross && GetSquare(2, 2).Status == SquareStatus.Cross)
+            if (GetSquare(0, 0).Status == SquareStatus.Cross && GetSquare(1, 1).Status == SquareStatus.Cross && GetSquare(2, 2).Status == SquareStatus.Cross)
             {
                 return TicTacToeTeam.Cross;
             }
@@ -74,7 +74,7 @@ namespace Games.TicTacToeClasses
             {
                 return TicTacToeTeam.Circle;
             }
-            else if (GetSquare(0, 2).Status == SquareStatus.Cross && GetSquare(1, 1).Status == SquareStatus.Cross && GetSquare(2, 0).Status == SquareStatus.Cross)
+            if (GetSquare(0, 2).Status == SquareStatus.Cross && GetSquare(1, 1).Status == SquareStatus.Cross && GetSquare(2, 0).Status == SquareStatus.Cross)
             {
                 return TicTacToeTeam.Cross;
             }
