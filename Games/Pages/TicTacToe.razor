@@ -129,10 +129,10 @@ else
     public void ChangeStartTeam()
     {
         crossStart = !crossStart;
+        game.IsCrossTurn = !game.IsCrossTurn;
 
         if (playVsComputer && (playAsX != crossStart))
         {
-            game.IsCrossTurn = !game.IsCrossTurn;
             game.AiMove();
         }
     }

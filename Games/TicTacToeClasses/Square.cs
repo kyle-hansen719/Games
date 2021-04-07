@@ -3,7 +3,7 @@ namespace Games.TicTacToeClasses
 {
     public class Square
     {
-        public SquareStatus Status { get; set; }
+        public SquareStatus Status { get; set; } = SquareStatus.Empty;
 
         public int xPos { get; set; }
 
@@ -11,7 +11,6 @@ namespace Games.TicTacToeClasses
 
         public Square(int xPosition, int yPosition)
         {
-            Status = SquareStatus.Empty;
             xPos = xPosition;
             yPos = yPosition;
         }

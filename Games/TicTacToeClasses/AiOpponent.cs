@@ -34,6 +34,7 @@ namespace Games.TicTacToeClasses
                 .OrderBy(x => Guid.NewGuid())
                 .ToList();
 
+            //AI WILL PRIORITIZE BLOCKING PLAYER MOVES RATHER THAN WINNING
             PossibleMoves = newPossibleMoves.OrderBy(x => x.ResultingTeam).ToList();
 
             return PossibleMoves.Select(x => x.Square).First();
