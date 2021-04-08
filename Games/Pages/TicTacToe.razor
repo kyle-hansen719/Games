@@ -47,10 +47,10 @@ else
 <div class="row">
     <div class="col-lg-3">
         <div class="btn-group w-100 mb-3">
-            <button @onclick="ChangePlayIcon" class="btn w-50 @(playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+            <button @onclick="ChangePlayIcon" class="btn w-50 @(playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty || !playVsComputer)">
                 Play as X
             </button>
-            <button @onclick="ChangePlayIcon" class="btn w-50 @(!playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
+            <button @onclick="ChangePlayIcon" class="btn w-50 @(!playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty || !playVsComputer)">
                 Play as O
             </button>
         </div>
@@ -99,8 +99,13 @@ else
 
     public void ResetGame()
     {
-        // Creates new game with an AI opponent whose team is the opposite of the players.
         game = new TicTacToeGame(new AiOpponent(playAsX ? TicTacToeTeam.Circle : TicTacToeTeam.Cross), playAsX);
+
+        // Makes player go first so AI doesnt lock player into game.
+        if (playVsComputer && crossStart != playAsX)
+        {
+            crossStart = playAsX;
+        }
     }
 
     public void ChangeStatus(int xPos, int yPos)

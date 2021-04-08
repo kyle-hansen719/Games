@@ -71,9 +71,9 @@ namespace Games.TicTacToeClasses
 
         //private MinimaxResult EvaluateMoveMiniMax(Grid grid, Square move)
         //{
+        //    var isAiTurn = true;
+
         //    return new MinimaxResult();
         //}
-
-        
     }
 }

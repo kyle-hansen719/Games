@@ -25,8 +25,6 @@ namespace Games.TicTacToeClasses
 
         public bool isWonByCross => GetWinner() == TicTacToeTeam.Cross;
 
-        public bool isWon => isWonByCircle || isWonByCross;
-
         public bool isEmpty => Squares.Where(x => x.Status == SquareStatus.Empty).Count() == Squares.Count();
 
         public List<Square> PossibleMoves => Squares.Where(x => x.Status == SquareStatus.Empty).ToList();
