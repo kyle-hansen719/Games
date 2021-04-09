@@ -24,8 +24,8 @@ else
             {
                 var x = i;
                 var y = j;
-                <div class="square border p-4" @onclick="() => ChangeStatus(x, y)">
-                    <i class="@game.grid.GetSquare(x, y).GetStatusHtml() square-icon"></i>
+                <div class="square border p-3" @onclick="() => ChangeStatus(x, y)">
+                    <i class="@game.grid.GetSquare(x, y).GetStatusHtml() square-content"></i>
                 </div>
             }
         </div>
@@ -33,7 +33,7 @@ else
 </div>
 
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-md-8 col-lg-4">
         <div class="btn-group w-100 mb-3">
             <button @onclick="ChangeOpponentStatus" class="btn w-50 @(playVsComputer ? "active btn-primary" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
                 Play vs. Computer
@@ -45,7 +45,7 @@ else
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-md-8 col-lg-4">
         <div class="btn-group w-100 mb-3">
             <button @onclick="ChangePlayIcon" class="btn w-50 @(playAsX ? "active btn-success" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty || !playVsComputer)">
                 Play as X
@@ -57,7 +57,7 @@ else
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-md-8 col-lg-4">
         <div class="btn-group w-100 mb-3">
             <button @onclick="ChangeStartTeam" class="btn w-50 @(crossStart ? "active btn-danger" : "btn-outline-secondary")" disabled="@(!game.grid.isEmpty)">
                 Cross Start
@@ -70,13 +70,26 @@ else
 </div>
 
 <style>
-    .square {
-        min-width: 160px;
-        min-height: 160px;
+    @@media (max-width: 768px) {
+        .square {
+            width: 30vw;
+            height: 30vw;
+        }
+
+        .square-content {
+            font-size: 22vw;
+        }
     }
 
-    .square-icon {
-        font-size: 100px;
+    @@media (min-width: 768px){
+        .square {
+            width: 9vw;
+            height: 9vw;
+        }
+
+        .square-content {
+            font-size: 6vw;
+        }
     }
 
     .red {
