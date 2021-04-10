@@ -20,6 +20,18 @@
 
     <button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
 
+    <div class="btn-group">
+        <button class="btn btn-success">
+            Easy
+        </button>
+        <button class="btn btn-primary">
+            Medium
+        </button>
+        <button class="btn btn-danger">
+            Hard
+        </button>
+    </div>
+
     <div class="grid mb-3">
         @for (var i = 0; i < Game.Grid.Height; i++)
         {
