@@ -1,6 +1,6 @@
 ﻿namespace Games.MinesweeperClasses.Enums
 {
-    public enum SquareStatus
+    public enum MinesweeperSquareStatus
     {
         Empty,
         Revealed,
