@@ -45,6 +45,7 @@ namespace Games.MinesweeperClasses
             return Squares;
         }
 
+        //STILL ADDS BOMBS TO CLICKED SQUARES
         private List<MinesweeperSquare> AddBombsToGrid(List<MinesweeperSquare> squares, int numBombs, int clickedX, int clickedY)
         {
             for (var i = 0; i < numBombs; i++)
