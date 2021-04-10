@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Games.MinesweeperClasses.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,15 +16,25 @@ namespace Games.MinesweeperClasses
 
         public List<MinesweeperSquare> Squares { get; set; }
 
-        public MinesweeperGrid(int width, int height, int numBombs)
+        // Grid is won when there are no non-bomb squares that are unrevealed.
+        public bool IsWon => Squares.Where(x => !x.IsBomb && x.Status == MinesweeperSquareStatus.Empty).Any();
+
+        // Grid is lost when there are revealed bombs.
+        public bool IsLost => Squares.Where(x => x.IsBomb && x.Status == MinesweeperSquareStatus.Revealed).Any();
+
+        public bool IsEmpty => !Squares.Where(x => x.Status == MinesweeperSquareStatus.Revealed).Any();
+
+        public MinesweeperGrid(int width, int height, int numBombs, int clickedX, int clickedY)
         {
             Width = width;
             Height = height;
             NumBombs = numBombs;
+            Squares = AddBombsToGrid(CreateGrid(width, height), numBombs, clickedX, clickedY);
+        }
 
-            // Creating grid of sqaures.
+        private List<MinesweeperSquare> CreateGrid(int width, int height)
+        {
             Squares = new List<MinesweeperSquare>();
-
             for (var x = 0; x < width; x++)
             {
                 for (var y = 0; y < height; y++)
@@ -31,20 +42,23 @@ namespace Games.MinesweeperClasses
                     Squares.Add(new MinesweeperSquare(x, y));
                 }
             }
+            return Squares;
+        }
 
-            // Adding bombs to Squares.
+        private List<MinesweeperSquare> AddBombsToGrid(List<MinesweeperSquare> squares, int numBombs, int clickedX, int clickedY)
+        {
             for (var i = 0; i < numBombs; i++)
             {
-                var square = Squares.OrderBy(x => Guid.NewGuid()).First();
-                if (!square.IsBomb)
-                {
-                    square.IsBomb = true;
-                }
-                else
-                {
-                    i--;
-                }
+                var square = squares
+                    .OrderBy(x => Guid.NewGuid())
+                    .Where(x => !x.IsBomb)
+                    .FirstOrDefault();
+
+                if (square is null) return squares;
+
+                square.IsBomb = true;
             }
+            return squares;
         }
 
         public MinesweeperSquare GetSquare(int xPos, int yPos)
@@ -65,6 +79,11 @@ namespace Games.MinesweeperClasses
                     || (x.xPos == xPos - 1 && x.yPos == yPos + 1)
                     || (x.xPos == xPos - 1 && x.yPos == yPos - 1))
                 .Count();
+        }
+
+        public void ClearGrid()
+        {
+            Squares = Squares.Select(x => new MinesweeperSquare(x.xPos, x.yPos)).ToList();
         }
     }
 }

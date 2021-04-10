@@ -9,9 +9,9 @@ namespace Games.MinesweeperClasses
     {
         public MinesweeperGrid Grid { get; set; }
 
-        public MinesweeperGame(int width, int height, int numBombs)
+        public MinesweeperGame(int width, int height, int numBombs, int clickedX, int clickedY)
         {
-            Grid = new MinesweeperGrid(width, height, numBombs);
+            Grid = new MinesweeperGrid(width, height, numBombs, clickedX, clickedY);
         }
     }
 }
