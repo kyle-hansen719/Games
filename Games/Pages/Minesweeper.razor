@@ -92,10 +92,10 @@
                     </div>
                     <div class="col-md-5">
                         <div class="btn-group">
-                            <button class="btn btn-outline-danger" @onclick="() => NumBombs++">
+                            <button class="btn btn-outline-danger" @onclick="() => ChangeGridDimension(() => NumBombs++)">
                                 <i class="oi oi-arrow-thick-top"></i>
                             </button>
-                            <button class="btn btn-outline-danger" @onclick="() => NumBombs--">
+                            <button class="btn btn-outline-danger" @onclick="() => ChangeGridDimension(() => NumBombs--)">
                                 <i class="oi oi-arrow-thick-bottom"></i>
                             </button>
                         </div>
@@ -138,35 +138,34 @@
 
     public void ChangeGridDimension(Action changeDimension)
     {
-        if (Game.Grid.IsEmpty)
+        changeDimension();
+
+        //fix this
+        if (GridHeight < 0)
         {
-            changeDimension();
-
-            //fix this
-            if (GridHeight < 0)
-            {
-                GridHeight = 1;
-                return;
-            }
-            if (GridWidth < 0)
-            {
-                GridWidth = 1;
-                return;
-            }
-
-            Game.Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
+            GridHeight = 1;
+            return;
         }
+        if (GridWidth < 0)
+        {
+            GridWidth = 1;
+            return;
+        }
+        if (NumBombs < 0)
+        {
+            NumBombs = 1;
+            return;
+        }
+
+        Game.Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
     }
 
     public void SetGrid(int gridWidth, int gridHeight, int numBombs)
     {
-        if (Game.Grid.IsEmpty)
-        {
-            GridWidth = gridWidth;
-            GridHeight = gridHeight;
-            NumBombs = numBombs;
-            Game.Grid = new MinesweeperGrid(gridWidth, gridHeight, 0, 0, 0);
-        }
+        GridWidth = gridWidth;
+        GridHeight = gridHeight;
+        NumBombs = numBombs;
+        Game.Grid = new MinesweeperGrid(gridWidth, gridHeight, 0, 0, 0);
     }
 
     private void RevealSquare(int xPos, int yPos)

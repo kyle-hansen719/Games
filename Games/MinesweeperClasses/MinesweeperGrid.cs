@@ -70,17 +70,35 @@ namespace Games.MinesweeperClasses
 
         public int GetNumOfAdjacentBombs(int xPos, int yPos)
         {
-            return Squares
+            return GetAdjacentSquares(xPos, yPos)
                 .Where(x => x.IsBomb)
+                .Count();
+
+            //return Squares
+            //    .Where(x => x.IsBomb)
+            //    .Where(x => (x.xPos == xPos + 1 && x.yPos == yPos)
+            //        || (x.xPos == xPos + 1 && x.yPos == yPos + 1)
+            //        || (x.xPos == xPos + 1 && x.yPos == yPos - 1)
+            //        || (x.xPos == xPos && x.yPos == yPos + 1) 
+            //        || (x.xPos == xPos && x.yPos == yPos - 1)
+            //        || (x.xPos == xPos - 1 && x.yPos == yPos)
+            //        || (x.xPos == xPos - 1 && x.yPos == yPos + 1)
+            //        || (x.xPos == xPos - 1 && x.yPos == yPos - 1))
+            //    .Count();
+        }
+
+        private List<MinesweeperSquare> GetAdjacentSquares(int xPos, int yPos)
+        {
+            return Squares
                 .Where(x => (x.xPos == xPos + 1 && x.yPos == yPos)
                     || (x.xPos == xPos + 1 && x.yPos == yPos + 1)
                     || (x.xPos == xPos + 1 && x.yPos == yPos - 1)
-                    || (x.xPos == xPos && x.yPos == yPos + 1) 
+                    || (x.xPos == xPos && x.yPos == yPos + 1)
                     || (x.xPos == xPos && x.yPos == yPos - 1)
                     || (x.xPos == xPos - 1 && x.yPos == yPos)
                     || (x.xPos == xPos - 1 && x.yPos == yPos + 1)
                     || (x.xPos == xPos - 1 && x.yPos == yPos - 1))
-                .Count();
+                .ToList();
         }
 
         public void ClearGrid()
