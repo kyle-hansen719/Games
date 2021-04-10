@@ -2,21 +2,34 @@
 @using Games.MinesweeperClasses
 @using Games.MinesweeperClasses.Enums
 
+@{
+    //<div class="square border @(Game.Grid.GetSquare(x, y).IsBomb ? "green" : "")" @onclick="() => RevealSquare(x, y)">
+}
+
 <div class="container-fluid">
     <h3 class="mb-3">Minesweeper</h3>
+
+    @if (Game.Grid.IsLost)
+    {
+        <h5>You Lost</h5>
+    }
+    else if (Game.Grid.IsWon)
+    {
+        <h5>You Won</h5>
+    }
 
     <button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
 
     <div class="grid mb-3">
-        @for (var i = 0; i < Game.Grid.Width; i++)
+        @for (var i = 0; i < Game.Grid.Height; i++)
         {
             <div class="row">
-                @for (var j = 0; j < Game.Grid.Height; j++)
+                @for (var j = 0; j < Game.Grid.Width; j++)
                 {
                     var x = j;
                     var y = i;
-                    <div class="square border @(Game.Grid.GetSquare(x, y).IsBomb ? "green" : "")" @onclick="() => RevealSquare(x, y)">
-                        <i class="square-content"></i>
+                    <div class="square border" @onclick="() => RevealSquare(x, y)">
+                        <i class="square-content @(Game.Grid.GetSquare(x, y).IsBomb && Game.Grid.GetSquare(x, y).Status == MinesweeperSquareStatus.Revealed ? "oi oi-warning" : "")"></i>
                         <p>@(!Game.Grid.GetSquare(x, y).IsBomb && Game.Grid.GetSquare(x, y).Status == MinesweeperSquareStatus.Revealed ? Game.Grid.GetNumOfAdjacentBombs(x, y).ToString() : "")</p>
                     </div>
                 }
@@ -50,10 +63,10 @@
                     </div>
                     <div class="col-md-5">
                         <div class="btn-group">
-                            <button class="btn btn-outline-success" @onclick="() => GridHeight++">
+                            <button class="btn btn-outline-success" @onclick="() => ChangeGridDimension(() => GridHeight++)">
                                 <i class="oi oi-arrow-thick-top"></i>
                             </button>
-                            <button class="btn btn-outline-success" @onclick="() => GridHeight--">
+                            <button class="btn btn-outline-success" @onclick="() => ChangeGridDimension(() => GridHeight--)">
                                 <i class="oi oi-arrow-thick-bottom"></i>
                             </button>
                         </div>
@@ -85,6 +98,7 @@
     .square {
         width: 3vw;
         height: 3vw;
+        border-color: black !important;
     }
 
     .square-content {
@@ -115,8 +129,7 @@
         if (Game.Grid.IsEmpty)
         {
             changeDimension();
-            //fix this
-            Game.Grid = new MinesweeperGrid(GridWidth, GridWidth, 0, 0, 0);
+            Game.Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
         }
     }
 
@@ -126,7 +139,10 @@
         {
             Game = new MinesweeperGame(GridWidth, GridHeight, NumBombs, xPos, yPos);
         }
-        Game.Grid.GetSquare(xPos, yPos).Reveal();
+        if (!Game.Grid.IsLost)
+        {
+            Game.Grid.GetSquare(xPos, yPos).Reveal();
+        }
     }
 
     private void FlagSquare(int xPos, int yPos)

@@ -45,14 +45,15 @@ namespace Games.MinesweeperClasses
             return Squares;
         }
 
-        //STILL ADDS BOMBS TO CLICKED SQUARES
         private List<MinesweeperSquare> AddBombsToGrid(List<MinesweeperSquare> squares, int numBombs, int clickedX, int clickedY)
         {
+            //Might want to optimize this (can take a while when there are lots of bombs)
             for (var i = 0; i < numBombs; i++)
             {
                 var square = squares
                     .OrderBy(x => Guid.NewGuid())
                     .Where(x => !x.IsBomb)
+                    .Where(x => !(x.xPos == clickedX && x.yPos == clickedY))
                     .FirstOrDefault();
 
                 if (square is null) return squares;
