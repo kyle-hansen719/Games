@@ -17,7 +17,7 @@ namespace Games.MinesweeperClasses
         public List<MinesweeperSquare> Squares { get; set; }
 
         // Grid is won when there are no non-bomb squares that are unrevealed.
-        public bool IsWon => Squares.Where(x => !x.IsBomb && x.Status == MinesweeperSquareStatus.Empty).Any();
+        public bool IsWon => !Squares.Where(x => !x.IsBomb && x.Status == MinesweeperSquareStatus.Empty).Any();
 
         // Grid is lost when there are revealed bombs.
         public bool IsLost => Squares.Where(x => x.IsBomb && x.Status == MinesweeperSquareStatus.Revealed).Any();

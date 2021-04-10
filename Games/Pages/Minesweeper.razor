@@ -19,15 +19,15 @@
     }
 
     <button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
-
-    <div class="btn-group">
-        <button class="btn btn-success">
+    <br />
+    <div class="btn-group mb-3">
+        <button class="btn btn-success" @onclick="() => SetGrid(10, 8, 10)">
             Easy
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-secondary" @onclick="() => SetGrid(18, 14, 40)">
             Medium
         </button>
-        <button class="btn btn-danger">
+        <button class="btn btn-danger" @onclick="() => SetGrid(24, 20, 99)">
             Hard
         </button>
     </div>
@@ -141,7 +141,31 @@
         if (Game.Grid.IsEmpty)
         {
             changeDimension();
+
+            //fix this
+            if (GridHeight < 0)
+            {
+                GridHeight = 1;
+                return;
+            }
+            if (GridWidth < 0)
+            {
+                GridWidth = 1;
+                return;
+            }
+
             Game.Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
+        }
+    }
+
+    public void SetGrid(int gridWidth, int gridHeight, int numBombs)
+    {
+        if (Game.Grid.IsEmpty)
+        {
+            GridWidth = gridWidth;
+            GridHeight = gridHeight;
+            NumBombs = numBombs;
+            Game.Grid = new MinesweeperGrid(gridWidth, gridHeight, 0, 0, 0);
         }
     }
 
