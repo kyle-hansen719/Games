@@ -1,0 +1,55 @@
+﻿@page "/minesweeper"
+@using Games.MinesweeperClasses
+@using Games.MinesweeperClasses.Enums 
+
+<h3 class="mb-3">Minesweeper</h3>
+
+<button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
+
+<div class="grid">
+    @for (var i = 0; i < Game.Grid.Width; i++)
+    {
+        <div class="row">
+            @for (var j = 0; j < Game.Grid.Height; j++)
+            {
+                var x = j;
+                var y = i;
+                <div class="square border @(Game.Grid.GetSquare(x, y).IsBomb ? "green" : "")">
+                    <i class="square-content"></i>
+                    <p>@Game.Grid.GetNumOfAdjacentBombs(x, y)</p>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<p>Number of Bombs: @Game.Grid.Squares.Where(x => x.IsBomb).Count()</p>
+
+<style>
+    .square {
+        width: 3vw;
+        height: 3vw;
+    }
+
+    .square-content {
+        font-size: 2vw;
+    }
+
+    .green {
+        background-color: lawngreen;
+    }
+</style>
+
+@code {
+    MinesweeperGame Game = new MinesweeperGame(4, 4, 5);
+
+    private void ResetGame()
+    {
+        Game = new MinesweeperGame(10, 10, 30);
+    }
+
+    private void RevealSquare(int xPos, int yPos)
+    {
+        Game.Grid.GetSquare(xPos, yPos).Status = MinesweeperSquareStatus.Revealed;
+    }
+}
