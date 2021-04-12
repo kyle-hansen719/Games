@@ -2,18 +2,14 @@
 @using Games.MinesweeperClasses
 @using Games.MinesweeperClasses.Enums
 
-@{
-    //<div class="square border @(Game.Grid.GetSquare(x, y).IsBomb ? "green" : "")" @onclick="() => RevealSquare(x, y)">
-}
-
 <div class="container-fluid">
     <h3 class="mb-3">Minesweeper</h3>
 
-    @if (Game.Grid.IsLost)
+    @if (Grid.IsLost)
     {
         <h5>You Lost</h5>
     }
-    else if (Game.Grid.IsWon)
+    else if (Grid.IsWon)
     {
         <h5>You Won</h5>
     }
@@ -31,18 +27,28 @@
             Hard
         </button>
     </div>
+    <br />
+    <div class="btn-group mb-3">
+        <button class="btn @(!isFlagMode ? "btn-primary" : "btn-outline-secondary")" @onclick="() => isFlagMode = !isFlagMode">
+            Reveal
+        </button>
+        <button class="btn @(isFlagMode ? "btn-primary" : "btn-outline-secondary")" @onclick="() => isFlagMode = !isFlagMode">
+            Flag
+        </button>
+    </div>
 
     <div class="grid mb-3">
-        @for (var i = 0; i < Game.Grid.Height; i++)
+        @for (var i = 0; i < Grid.Height; i++)
         {
             <div class="row">
-                @for (var j = 0; j < Game.Grid.Width; j++)
+                @for (var j = 0; j < Grid.Width; j++)
                 {
                     var x = j;
                     var y = i;
                     <div class="square border" @onclick="() => RevealSquare(x, y)">
-                        <i class="square-content @(Game.Grid.GetSquare(x, y).IsBomb && Game.Grid.GetSquare(x, y).Status == MinesweeperSquareStatus.Revealed ? "oi oi-warning" : "")"></i>
-                        <p>@(!Game.Grid.GetSquare(x, y).IsBomb && Game.Grid.GetSquare(x, y).Status == MinesweeperSquareStatus.Revealed ? Game.Grid.GetNumOfAdjacentBombs(x, y).ToString() : "")</p>
+                        <div class="square-content">
+                            @Grid.GetSquareMarkupString(Grid.GetSquare(x, y))
+                        </div>
                     </div>
                 }
             </div>
@@ -123,7 +129,7 @@
 </style>
 
 @code {
-    MinesweeperGame Game = new MinesweeperGame(10, 10, 0, 0, 0);
+    MinesweeperGrid Grid = new MinesweeperGrid(10, 10, 0, 0, 0);
 
     int GridWidth = 10;
 
@@ -131,9 +137,11 @@
 
     int NumBombs = 30;
 
+    bool isFlagMode = false;
+
     private void ResetGame()
     {
-        Game.Grid.ClearGrid();
+        Grid.ClearGrid();
     }
 
     public void ChangeGridDimension(Action changeDimension)
@@ -157,7 +165,7 @@
             return;
         }
 
-        Game.Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
+        Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
     }
 
     public void SetGrid(int gridWidth, int gridHeight, int numBombs)
@@ -165,23 +173,31 @@
         GridWidth = gridWidth;
         GridHeight = gridHeight;
         NumBombs = numBombs;
-        Game.Grid = new MinesweeperGrid(gridWidth, gridHeight, 0, 0, 0);
+        Grid = new MinesweeperGrid(gridWidth, gridHeight, 0, 0, 0);
     }
 
     private void RevealSquare(int xPos, int yPos)
     {
-        if (Game.Grid.IsEmpty)
+        if (isFlagMode)
         {
-            Game = new MinesweeperGame(GridWidth, GridHeight, NumBombs, xPos, yPos);
+            Grid.GetSquare(xPos, yPos).Flag();
+            return;
         }
-        if (!Game.Grid.IsLost)
+
+        if (Grid.IsEmpty)
         {
-            Game.Grid.GetSquare(xPos, yPos).Reveal();
+            // Initializes grid values on the first click of the grid.
+            //maybe just make this add bombs to the current grid
+            Grid = new MinesweeperGrid(GridWidth, GridHeight, NumBombs, xPos, yPos);
+        }
+        if (!Grid.IsLost)
+        {
+            Grid.GetSquare(xPos, yPos).Reveal();
         }
     }
 
     private void FlagSquare(int xPos, int yPos)
     {
-        Game.Grid.GetSquare(xPos, yPos).Flag();
+        Grid.GetSquare(xPos, yPos).Flag();
     }
 }

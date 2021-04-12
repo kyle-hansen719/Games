@@ -1,27 +1,25 @@
 ﻿using Games.MinesweeperClasses.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Games.MinesweeperClasses
 {
     public class MinesweeperSquare
     {
-        public int xPos { get; set; }
+        public int Id { get; }
+        public int xPos { get; }
 
-        public int yPos { get; set; }
+        public int yPos { get; }
 
-        public MinesweeperSquareStatus Status { get; set; } = MinesweeperSquareStatus.Empty;
+        public MinesweeperSquareStatus Status { get; private set; } = MinesweeperSquareStatus.Empty;
 
         public bool IsBomb { get; set; } = false;
 
         public int NumAdjacentBombs { get; set; }
 
-        public MinesweeperSquare(int xPosition, int yPosition)
+        public MinesweeperSquare(int xPosition, int yPosition, int id)
         {
             xPos = xPosition;
             yPos = yPosition;
+            Id = id;
         }
 
         public void Reveal()
