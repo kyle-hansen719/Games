@@ -29,6 +29,13 @@ namespace Games.MinesweeperClasses
 
         public void Flag()
         {
+            // If already flagged, set to empty.
+            if (Status == MinesweeperSquareStatus.Flagged)
+            {
+                Status = MinesweeperSquareStatus.Empty;
+                return;
+            }
+
             Status = MinesweeperSquareStatus.Flagged;
         }
     }

@@ -178,7 +178,8 @@
 
     private void RevealSquare(int xPos, int yPos)
     {
-        if (isFlagMode)
+        //var square = Grid.GetSquare(xPos, yPos);
+        if (isFlagMode && Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Revealed)
         {
             Grid.GetSquare(xPos, yPos).Flag();
             return;
