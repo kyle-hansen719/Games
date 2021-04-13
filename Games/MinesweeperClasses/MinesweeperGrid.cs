@@ -18,7 +18,7 @@ namespace Games.MinesweeperClasses
         public List<MinesweeperSquare> Squares { get; private set; }
 
         // Grid is won when there are no non-bomb squares that are unrevealed.
-        public bool IsWon => !Squares.Where(x => !x.IsBomb && x.Status == MinesweeperSquareStatus.Empty).Any();
+        public bool IsWon => !Squares.Where(x => !x.IsBomb && x.Status != MinesweeperSquareStatus.Revealed).Any();
 
         // Grid is lost when there are revealed bombs.
         public bool IsLost => Squares.Where(x => x.IsBomb && x.Status == MinesweeperSquareStatus.Revealed).Any();
@@ -48,27 +48,22 @@ namespace Games.MinesweeperClasses
             return Squares;
         }
 
-        private List<MinesweeperSquare> AddBombsToGrid(List<MinesweeperSquare> squares, int numBombs, int clickedX, int clickedY)
+        public List<MinesweeperSquare> AddBombsToGrid(List<MinesweeperSquare> squares, int numBombs, int clickedX, int clickedY)
         {
             var clickedSqaures = GetAdjacentSquares(clickedX, clickedY);
             clickedSqaures.Add(GetSquare(clickedX, clickedY));
 
-            //Might want to optimize this (can take a while when there are lots of bombs)
-            for (var i = 0; i < numBombs; i++)
-            {
-                var square = squares
-                    .OrderBy(x => Guid.NewGuid())
-                    .Where(x => !x.IsBomb)
-                    .Where(x => !clickedSqaures.Contains(x))
-                    .FirstOrDefault();
+            squares
+                .OrderBy(x => Guid.NewGuid())
+                .Where(x => !clickedSqaures.Contains(x))
+                .Take(numBombs)
+                .ToList()
+                .ForEach(x => x.IsBomb = true);
 
-                if (square is null) return squares;
-
-                square.IsBomb = true;
-            }
             return squares;
         }
 
+        //use a dictionary for this
         public MinesweeperSquare GetSquare(int xPos, int yPos)
         {
             return Squares.Where(x => x.xPos == xPos && x.yPos == yPos).FirstOrDefault();
@@ -95,6 +90,20 @@ namespace Games.MinesweeperClasses
                     return (MarkupString)"";
             }
         }
+
+        //public void ChangeSquareStatus(MinesweeperSquare square)
+        //{
+        //    square.Reveal();
+
+        //    var adjacentSquares = GetAdjacentSquares(square.xPos, square.yPos);
+
+        //    if (adjacentSquares.Where(x => x.IsBomb).Count() == 0)
+        //    {
+        //        //ChangeSquareStatus(adjacentSquares[0]);
+
+        //        adjacentSquares.ForEach(x => ChangeSquareStatus(x));
+        //    }
+        //}
 
         private int GetNumOfAdjacentBombs(int xPos, int yPos)
         {

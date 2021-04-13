@@ -17,17 +17,18 @@
     <button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
     <br />
     <div class="btn-group mb-3">
-        <button class="btn btn-success" @onclick="() => SetGrid(10, 8, 10)">
+        <button class="btn btn-outline-success" @onclick="() => SetGrid(10, 8, 10)">
             Easy
         </button>
-        <button class="btn btn-secondary" @onclick="() => SetGrid(18, 14, 40)">
+        <button class="btn btn-outline-secondary" @onclick="() => SetGrid(18, 14, 40)">
             Medium
         </button>
-        <button class="btn btn-danger" @onclick="() => SetGrid(24, 20, 99)">
+        <button class="btn btn-outline-danger" @onclick="() => SetGrid(24, 20, 99)">
             Hard
         </button>
     </div>
     <br />
+    <p>Remaining Bombs: @(NumBombs - Grid.Squares.Where(x => x.Status == MinesweeperSquareStatus.Flagged).Count())</p>
     <div class="btn-group mb-3">
         <button class="btn @(!isFlagMode ? "btn-primary" : "btn-outline-secondary")" @onclick="() => isFlagMode = !isFlagMode">
             Reveal
@@ -46,7 +47,7 @@
                     var x = j;
                     var y = i;
                     <div class="square border" @onclick="() => RevealSquare(x, y)">
-                        <div class="square-content">
+                        <div class="square-content text-center">
                             @Grid.GetSquareMarkupString(Grid.GetSquare(x, y))
                         </div>
                     </div>
@@ -129,13 +130,13 @@
 </style>
 
 @code {
-    MinesweeperGrid Grid = new MinesweeperGrid(10, 10, 0, 0, 0);
+    MinesweeperGrid Grid = new MinesweeperGrid(10, 8, 0, 0, 0);
 
     int GridWidth = 10;
 
-    int GridHeight = 10;
+    int GridHeight = 8;
 
-    int NumBombs = 30;
+    int NumBombs = 10;
 
     bool isFlagMode = false;
 
@@ -149,17 +150,17 @@
         changeDimension();
 
         //fix this
-        if (GridHeight < 0)
+        if (GridHeight < 1)
         {
             GridHeight = 1;
             return;
         }
-        if (GridWidth < 0)
+        if (GridWidth < 1)
         {
             GridWidth = 1;
             return;
         }
-        if (NumBombs < 0)
+        if (NumBombs < 1)
         {
             NumBombs = 1;
             return;
@@ -187,13 +188,13 @@
 
         if (Grid.IsEmpty)
         {
-            // Initializes grid values on the first click of the grid.
-            //maybe just make this add bombs to the current grid
-            Grid = new MinesweeperGrid(GridWidth, GridHeight, NumBombs, xPos, yPos);
+            // Adds bombs to the empty grid when first clicked.
+            Grid.AddBombsToGrid(Grid.Squares, NumBombs, xPos, yPos);
         }
-        if (!Grid.IsLost)
+        if (!Grid.IsLost && Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Flagged)
         {
             Grid.GetSquare(xPos, yPos).Reveal();
+            //Grid.ChangeSquareStatus(Grid.GetSquare(xPos, yPos));
         }
     }
 
