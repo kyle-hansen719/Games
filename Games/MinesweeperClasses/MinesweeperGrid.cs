@@ -36,13 +36,13 @@ namespace Games.MinesweeperClasses
         private List<MinesweeperSquare> CreateGrid(int width, int height)
         {
             Squares = new List<MinesweeperSquare>();
-            var newId = 0;
+            var index = 0;
             for (var x = 0; x < width; x++)
             {
                 for (var y = 0; y < height; y++)
                 {
-                    Squares.Add(new MinesweeperSquare(x, y, newId));
-                    newId++;
+                    Squares.Add(new MinesweeperSquare(x, y, index));
+                    index++;
                 }
             }
             return Squares;
@@ -67,11 +67,6 @@ namespace Games.MinesweeperClasses
         public MinesweeperSquare GetSquare(int xPos, int yPos)
         {
             return Squares.Where(x => x.xPos == xPos && x.yPos == yPos).FirstOrDefault();
-        }
-
-        public MinesweeperSquare GetSquareById(int id)
-        {
-            return Squares.Where(x => x.Id == id).FirstOrDefault();
         }
 
         public MarkupString GetSquareMarkupString(MinesweeperSquare square)
@@ -128,7 +123,7 @@ namespace Games.MinesweeperClasses
 
         public void ClearGrid()
         {
-            Squares = Squares.Select(x => new MinesweeperSquare(x.xPos, x.yPos, x.Id)).ToList();
+            Squares = Squares.Select(x => new MinesweeperSquare(x.xPos, x.yPos, x.SquaresIndex)).ToList();
         }
     }
 }

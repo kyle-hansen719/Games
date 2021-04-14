@@ -4,7 +4,8 @@ namespace Games.MinesweeperClasses
 {
     public class MinesweeperSquare
     {
-        public int Id { get; }
+        public int SquaresIndex { get; }
+
         public int xPos { get; }
 
         public int yPos { get; }
@@ -13,13 +14,11 @@ namespace Games.MinesweeperClasses
 
         public bool IsBomb { get; set; } = false;
 
-        public int NumAdjacentBombs { get; set; }
-
-        public MinesweeperSquare(int xPosition, int yPosition, int id)
+        public MinesweeperSquare(int xPosition, int yPosition, int index)
         {
             xPos = xPosition;
             yPos = yPosition;
-            Id = id;
+            SquaresIndex = index;
         }
 
         public void Reveal()
