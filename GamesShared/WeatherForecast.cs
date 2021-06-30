@@ -1,6 +1,6 @@
 using System;
 
-namespace GamesApi
+namespace GamesShared
 {
     public class WeatherForecast
     {
