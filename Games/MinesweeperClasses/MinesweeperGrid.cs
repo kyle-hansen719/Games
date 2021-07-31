@@ -100,6 +100,7 @@ namespace Games.MinesweeperClasses
             return adjacentSquares;
         }
 
+        // TODO: Finish this function
         // Clears all adjacent squares with zeros in them.
         public void ClearAllSafeSquares(int clickedXPos, int clickedYPos)
         {
