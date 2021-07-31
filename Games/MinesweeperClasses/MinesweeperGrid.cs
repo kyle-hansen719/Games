@@ -14,7 +14,7 @@ namespace Games.MinesweeperClasses
 
         public int NumBombs { get; set; }
 
-        public Dictionary<(int, int), MinesweeperSquare> Squares { get; private set; }
+        public Dictionary<(int xPos, int yPos), MinesweeperSquare> Squares { get; private set; }
 
         // Grid is won when there are no non-bomb squares that are unrevealed.
         public bool IsWon => !Squares.Where(x => !x.Value.IsBomb && x.Value.Status != MinesweeperSquareStatus.Revealed).Any();
@@ -98,6 +98,11 @@ namespace Games.MinesweeperClasses
                 }
             }
             return adjacentSquares;
+        }
+
+        // Clears all adjacent squares with zeros in them.
+        public void ClearAllSafeSquares(int clickedXPos, int clickedYPos)
+        {
         }
 
         public void ClearGrid()
