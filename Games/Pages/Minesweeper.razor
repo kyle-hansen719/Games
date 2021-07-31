@@ -28,7 +28,7 @@
         </button>
     </div>
     <br />
-    <p>Remaining Bombs: @(NumBombs - Grid.Squares.Where(x => x.Status == MinesweeperSquareStatus.Flagged).Count())</p>
+    <p>Remaining Bombs: @(NumBombs - Grid.Squares.Where(x => x.Value.Status == MinesweeperSquareStatus.Flagged).Count())</p>
     <div class="btn-group mb-3">
         <button class="btn @(!isFlagMode ? "btn-primary" : "btn-outline-secondary")" @onclick="() => isFlagMode = !isFlagMode">
             Reveal
@@ -48,7 +48,7 @@
                     var y = i;
                     <div class="square border" @onclick="() => RevealSquare(x, y)">
                         <div class="square-content text-center">
-                            @Grid.GetSquareMarkupString(Grid.GetSquare(x, y))
+                            @Grid.GetSquareMarkupString(x, y)
                         </div>
                     </div>
                 }
@@ -130,7 +130,7 @@
 </style>
 
 @code {
-    MinesweeperGrid Grid = new MinesweeperGrid(10, 8, 0, 0, 0);
+    MinesweeperGrid Grid = new MinesweeperGrid(10, 8);
 
     int GridWidth = 10;
 
@@ -166,7 +166,7 @@
             return;
         }
 
-        Grid = new MinesweeperGrid(GridWidth, GridHeight, 0, 0, 0);
+        Grid = new MinesweeperGrid(GridWidth, GridHeight);
     }
 
     public void SetGrid(int gridWidth, int gridHeight, int numBombs)
@@ -174,7 +174,7 @@
         GridWidth = gridWidth;
         GridHeight = gridHeight;
         NumBombs = numBombs;
-        Grid = new MinesweeperGrid(gridWidth, gridHeight, 0, 0, 0);
+        Grid = new MinesweeperGrid(gridWidth, gridHeight);
     }
 
     private void RevealSquare(int xPos, int yPos)
