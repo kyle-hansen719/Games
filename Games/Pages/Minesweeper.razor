@@ -179,7 +179,8 @@
 
     private void RevealSquare(int xPos, int yPos)
     {
-        //var square = Grid.GetSquare(xPos, yPos);
+        if (Grid.IsLost) return;
+
         if (isFlagMode && Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Revealed)
         {
             Grid.GetSquare(xPos, yPos).Flag();
@@ -191,10 +192,14 @@
             // Adds bombs to the empty grid when first clicked.
             Grid.AddBombsToGrid(Grid.Squares, NumBombs, xPos, yPos);
         }
-        if (!Grid.IsLost && Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Flagged)
+        if (Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Flagged)
         {
             Grid.GetSquare(xPos, yPos).Reveal();
-            //Grid.ChangeSquareStatus(Grid.GetSquare(xPos, yPos));
+        }
+
+        if (Grid.IsLost)
+        {
+            Grid.RevealAllBombs();
         }
     }
 

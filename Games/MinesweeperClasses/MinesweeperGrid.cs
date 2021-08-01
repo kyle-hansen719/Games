@@ -58,10 +58,16 @@ namespace Games.MinesweeperClasses
             return squares;
         }
 
-        //use a dictionary for this
         public MinesweeperSquare GetSquare(int xPos, int yPos)
         {
-            return Squares[(xPos, yPos)];
+            try
+            {
+                return Squares[(xPos, yPos)];
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public MarkupString GetSquareMarkupString(int xPos, int yPos)
@@ -79,14 +85,7 @@ namespace Games.MinesweeperClasses
 
         private int GetNumOfAdjacentBombs(int xPos, int yPos)
         {
-            return GetAdjacentSquares(xPos, yPos)
-                .Where(x => x.IsBomb)
-                .Count();
-        }
-
-        private List<MinesweeperSquare> GetAdjacentSquares(int xPos, int yPos)
-        {
-            var adjacentSquares = new List<MinesweeperSquare>();
+            var numAdjacentBombs = 0;
             for (int xDelta = -1; xDelta <= 1; xDelta++)
             {
                 for (int yDelta = -1; yDelta <= 1; yDelta++)
@@ -94,21 +93,27 @@ namespace Games.MinesweeperClasses
                     if (xDelta == 0 && yDelta == 0) continue;       // Don't get the current square.
 
                     var adjacentSquare = GetSquare(xPos + xDelta, yPos + yDelta);
-                    if (adjacentSquare != null) adjacentSquares.Add(adjacentSquare);
+                    if (adjacentSquare != null && adjacentSquare.IsBomb) numAdjacentBombs++;
                 }
             }
-            return adjacentSquares;
+            return numAdjacentBombs;
         }
 
         // TODO: Finish this function
         // Clears all adjacent squares with zeros in them.
         public void ClearAllSafeSquares(int clickedXPos, int clickedYPos)
         {
+
         }
 
         public void ClearGrid()
         {
             Squares = CreateGrid(Width, Height);
+        }
+
+        public void RevealAllBombs()
+        {
+            Squares.Where(x => x.Value.IsBomb).Select(x => x.Value).ToList().ForEach(x => x.Reveal());
         }
     }
 }
