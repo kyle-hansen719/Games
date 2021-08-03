@@ -181,9 +181,11 @@
     {
         if (Grid.IsLost) return;
 
-        if (isFlagMode && Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Revealed)
+        var square = Grid.GetSquare(xPos, yPos);
+
+        if (isFlagMode && square.Status != MinesweeperSquareStatus.Revealed)
         {
-            Grid.GetSquare(xPos, yPos).Flag();
+            square.Flag();
             return;
         }
 
@@ -192,9 +194,14 @@
             // Adds bombs to the empty grid when first clicked.
             Grid.AddBombsToGrid(Grid.Squares, NumBombs, xPos, yPos);
         }
-        if (Grid.GetSquare(xPos, yPos).Status != MinesweeperSquareStatus.Flagged)
+        if (square.Status != MinesweeperSquareStatus.Flagged)
         {
-            Grid.GetSquare(xPos, yPos).Reveal();
+            square.Reveal();
+
+            if (Grid.GetNumOfAdjacentBombs(xPos, yPos) == 0)
+            {
+                Grid.ClearAllSafeSquares(xPos, yPos);
+            }
         }
 
         if (Grid.IsLost)

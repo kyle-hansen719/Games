@@ -8,6 +8,16 @@ namespace Games.MinesweeperClasses
 
         public bool IsBomb { get; set; } = false;
 
+        public int XPos { get; set; }
+
+        public int YPos { get; set; }
+
+        public MinesweeperSquare(int xPos, int yPos)
+        {
+            XPos = xPos;
+            YPos = yPos;
+        }
+
         public void Reveal()
         {
             Status = MinesweeperSquareStatus.Revealed;
