@@ -39,7 +39,7 @@ namespace Games.MinesweeperClasses
             {
                 for (var y = 0; y < height; y++)
                 {
-                    squares.Add((x, y), new MinesweeperSquare());
+                    squares.Add((x, y), new MinesweeperSquare(x, y));
                 }
             }
             return squares;
@@ -47,10 +47,11 @@ namespace Games.MinesweeperClasses
 
         public Dictionary<(int, int), MinesweeperSquare> AddBombsToGrid(Dictionary<(int, int), MinesweeperSquare> squares, int numBombs, int clickedX, int clickedY)
         {
-            // TODO: Make this not populate adjacent squares to first click with bombs.
+            var adjacentBombCoords = GetAdjacentSquares(clickedX, clickedY).Select(x => (x.XPos, x.YPos));
+
             squares
                 .OrderBy(x => Guid.NewGuid())
-                .Where(x => x.Key != (clickedX, clickedY))
+                .Where(x => !adjacentBombCoords.Contains(x.Key) && x.Key != (clickedX, clickedY))
                 .Take(numBombs)
                 .ToList()
                 .ForEach(x => x.Value.IsBomb = true);
@@ -83,7 +84,8 @@ namespace Games.MinesweeperClasses
             };
         }
 
-        private int GetNumOfAdjacentBombs(int xPos, int yPos)
+        // TODO: Make this private
+        public int GetNumOfAdjacentBombs(int xPos, int yPos)
         {
             var numAdjacentBombs = 0;
             for (int xDelta = -1; xDelta <= 1; xDelta++)
@@ -99,11 +101,38 @@ namespace Games.MinesweeperClasses
             return numAdjacentBombs;
         }
 
-        // TODO: Finish this function
         // Clears all adjacent squares with zeros in them.
         public void ClearAllSafeSquares(int clickedXPos, int clickedYPos)
         {
+            var adjacentSqaures = GetAdjacentSquares(clickedXPos, clickedYPos);
 
+            foreach (var square in adjacentSqaures)
+            {
+                if (square.Status == MinesweeperSquareStatus.Revealed) continue;
+
+                square.Reveal();
+
+                if (GetNumOfAdjacentBombs(square.XPos, square.YPos) == 0)
+                {
+                    ClearAllSafeSquares(square.XPos, square.YPos);
+                }
+            }
+        }
+
+        private List<MinesweeperSquare> GetAdjacentSquares(int xPos, int yPos)
+        {
+            var adjacentSqaures = new List<MinesweeperSquare>();
+            for (int xDelta = -1; xDelta <= 1; xDelta++)
+            {
+                for (int yDelta = -1; yDelta <= 1; yDelta++)
+                {
+                    if (xDelta == 0 && yDelta == 0) continue;
+
+                    var adjacentSquare = GetSquare(xPos + xDelta, yPos + yDelta);
+                    if (adjacentSquare != null) adjacentSqaures.Add(adjacentSquare);
+                }
+            }
+            return adjacentSqaures;
         }
 
         public void ClearGrid()
