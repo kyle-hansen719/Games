@@ -1,20 +1,219 @@
 ﻿@page "/"
+@page "/minesweeper"
+@using Games.MinesweeperClasses
+@using Games.MinesweeperClasses.Enums
 
 <div class="container-fluid">
-    <div class="row col-md-6 mx-auto">
-        <div class="jumbotron text-center">
-            <h1>Welcome to Kyle's Blazor test.</h1>
-            <hr />
-            <p>This is a website I built with Blazor Webassembly<br />to try to create a few simple games using C#.</p>
-            <div class="btn-group-vertical btn-group-lg">
-                <a class="btn btn-outline-primary" href="/tictactoe">
-                    <i class="oi oi-x"></i> Tic-Tac-Toe
-                </a>
-                <a class="btn btn-outline-primary" href="/minesweeper">
-                    <i class="oi oi-flag"></i> Minesweeper
-                </a>
+    <h3 class="mb-3">Minesweeper</h3>
+
+    @if (Grid.IsLost)
+    {
+        <h5>You Lost</h5>
+    }
+    else if (Grid.IsWon)
+    {
+        <h5>You Won</h5>
+    }
+
+    <button @onclick="ResetGame" class="btn btn-primary mb-3">New Game</button>
+    <br />
+    <div class="btn-group mb-3">
+        <button class="btn btn-outline-success" @onclick="() => SetGrid(10, 8, 10)">
+            Easy
+        </button>
+        <button class="btn btn-outline-secondary" @onclick="() => SetGrid(18, 14, 40)">
+            Medium
+        </button>
+        <button class="btn btn-outline-danger" @onclick="() => SetGrid(24, 20, 99)">
+            Hard
+        </button>
+    </div>
+    <br />
+    <p>Remaining Bombs: @(NumBombs - Grid.Squares.Where(x => x.Value.Status == MinesweeperSquareStatus.Flagged).Count())</p>
+    <div class="btn-group mb-3">
+        <button class="btn @(!isFlagMode ? "btn-primary" : "btn-outline-secondary")" @onclick="() => isFlagMode = !isFlagMode">
+            Reveal
+        </button>
+        <button class="btn @(isFlagMode ? "btn-primary" : "btn-outline-secondary")" @onclick="() => isFlagMode = !isFlagMode">
+            Flag
+        </button>
+    </div>
+
+    <div class="grid mb-3">
+        @for (var i = 0; i < Grid.Height; i++)
+        {
+            <div class="row">
+                @for (var j = 0; j < Grid.Width; j++)
+                {
+                    var x = j;
+                    var y = i;
+                    <div class="square border" @onclick="() => RevealSquare(x, y)">
+                        <div class="square-content text-center">
+                            @Grid.GetSquareMarkupString(x, y)
+                        </div>
+                    </div>
+                }
             </div>
-        </div>
+        }
+    </div>
+
+    <div class="row col-md-6">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div>Grid Width: @GridWidth</div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary" @onclick="() => ChangeGridDimension(() => GridWidth++)">
+                                <i class="oi oi-arrow-thick-top"></i>
+                            </button>
+                            <button class="btn btn-outline-primary" @onclick="() => ChangeGridDimension(() => GridWidth--)">
+                                <i class="oi oi-arrow-thick-bottom"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div>Grid Height: @GridHeight</div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-success" @onclick="() => ChangeGridDimension(() => GridHeight++)">
+                                <i class="oi oi-arrow-thick-top"></i>
+                            </button>
+                            <button class="btn btn-outline-success" @onclick="() => ChangeGridDimension(() => GridHeight--)">
+                                <i class="oi oi-arrow-thick-bottom"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div>Number of Bombs: @NumBombs</div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-danger" @onclick="() => ChangeGridDimension(() => NumBombs++)">
+                                <i class="oi oi-arrow-thick-top"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" @onclick="() => ChangeGridDimension(() => NumBombs--)">
+                                <i class="oi oi-arrow-thick-bottom"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>
+
+<style>
+    .square {
+        width: 3vw;
+        height: 3vw;
+        border-color: black !important;
+    }
+
+    .square-content {
+        font-size: 2vw;
+    }
+
+    .green {
+        background-color: lawngreen;
+    }
+</style>
+
+@code {
+    MinesweeperGrid Grid = new MinesweeperGrid(10, 8);
+
+    int GridWidth = 10;
+
+    int GridHeight = 8;
+
+    int NumBombs = 10;
+
+    bool isFlagMode = false;
+
+    private void ResetGame()
+    {
+        Grid.ClearGrid();
+    }
+
+    public void ChangeGridDimension(Action changeDimension)
+    {
+        changeDimension();
+
+        //fix this
+        if (GridHeight < 1)
+        {
+            GridHeight = 1;
+            return;
+        }
+        if (GridWidth < 1)
+        {
+            GridWidth = 1;
+            return;
+        }
+        if (NumBombs < 1)
+        {
+            NumBombs = 1;
+            return;
+        }
+
+        Grid = new MinesweeperGrid(GridWidth, GridHeight);
+    }
+
+    public void SetGrid(int gridWidth, int gridHeight, int numBombs)
+    {
+        GridWidth = gridWidth;
+        GridHeight = gridHeight;
+        NumBombs = numBombs;
+        Grid = new MinesweeperGrid(gridWidth, gridHeight);
+    }
+
+    private void RevealSquare(int xPos, int yPos)
+    {
+        if (Grid.IsLost) return;
+
+        var square = Grid.GetSquare(xPos, yPos);
+
+        if (isFlagMode && square.Status != MinesweeperSquareStatus.Revealed)
+        {
+            square.Flag();
+            return;
+        }
+
+        if (Grid.IsEmpty)
+        {
+            // Adds bombs to the empty grid when first clicked.
+            Grid.AddBombsToGrid(Grid.Squares, NumBombs, xPos, yPos);
+        }
+        if (square.Status != MinesweeperSquareStatus.Flagged)
+        {
+            square.Reveal();
+
+            if (Grid.GetNumOfAdjacentBombs(xPos, yPos) == 0)
+            {
+                Grid.ClearAllSafeSquares(xPos, yPos);
+            }
+        }
+
+        if (Grid.IsLost)
+        {
+            Grid.RevealAllBombs();
+        }
+    }
+
+    private void FlagSquare(int xPos, int yPos)
+    {
+        Grid.GetSquare(xPos, yPos).Flag();
+    }
+}
 
